@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\frontend",
+    "\\frontend\\hooks",
+    "\\frontend\\themes",
+    "\\frontend\\themes\\lthotel",
+    "\\frontend\\util",
+    "\\frontend\\views",
+    "\\frontend\\views\\login",
+    "\\frontend\\views\\user"
+  ],
+  "SelectedNode": "\\frontend\\routes.tsx",
+  "PreviewInSolutionExplorer": false
+}
