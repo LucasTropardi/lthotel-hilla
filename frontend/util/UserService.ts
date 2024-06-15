@@ -23,6 +23,20 @@ export async function getUsers(): Promise<User[]> {
   }));
 }
 
+export async function getUsersByName(name: string): Promise<User[]> {
+  const response = await UserEndpoint.listUsersByName(name);
+
+  if (!Array.isArray(response)) {
+    throw new Error('Invalid response structure');
+  }
+
+  return response.map((user: any) => ({
+    ...user,
+    profilePicture: new Uint8Array(user.profilePicture)
+  }));
+}
+
+
 export async function createUser(user: User): Promise<User> {
   const newUser = {
     ...user,

@@ -11,16 +11,19 @@ import { useNavigate } from 'react-router-dom';
 import UserForm from './UserForm';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { deleteUsers } from 'Frontend/util/UserService';
+import { deleteUsers, getUsersByName } from 'Frontend/util/UserService';
+import TextField from '@mui/material/TextField'; // Importando TextField do material-ui
 import { Notification } from '@hilla/react-components/Notification.js';
 
 export default function UserGrid() {
   const { users, loading, error, refetch } = useUser();
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<Set<User>>(new Set());
   const [showForm, setShowForm] = useState(false);
   const [selectedUserForEdit, setSelectedUserForEdit] = useState<User | undefined>();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [filter, setFilter] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,6 +35,21 @@ export default function UserGrid() {
   useEffect(() => {
     if (refetch) refetch();
   }, [refreshKey]);
+
+  useEffect(() => {
+    setFilteredUsers(users);
+  }, [users]);
+
+  const handleFilterChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFilter(value);
+    if (value) {
+      const filteredUsers = await getUsersByName(value);
+      setFilteredUsers(filteredUsers);
+    } else {
+      setFilteredUsers(users);
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -60,7 +78,7 @@ export default function UserGrid() {
 
   const handleDeleteSelected = async () => {
     if (selectedUsers.size === 0) {
-      setErrorMessage('Selecione pelo menos um usuário para deletar.');
+      toast.warning('Selecione pelo menos um usuário para apagar', { theme: 'colored' });
       return;
     }
     setErrorMessage(null);
@@ -92,7 +110,7 @@ export default function UserGrid() {
 
   const handleUpdateUser = () => {
     if (selectedUsers.size !== 1) {
-      setErrorMessage('Selecione exatamente um usuário para editar.');
+      toast.warning('Seleciona apenas um usuário para edição', { theme: 'colored' });
       return;
     }
     const selectedUser = Array.from(selectedUsers)[0];
@@ -102,16 +120,7 @@ export default function UserGrid() {
 
   return (
     <React.Fragment>
-      {showForm ? (
-        <UserForm
-          onSubmit={() => {
-            setShowForm(false);
-            toast.success('Usuário salvo com sucesso!', { theme: 'colored' });
-            setRefreshKey(prev => prev + 1);
-          }}
-          selectedUser={selectedUserForEdit}
-        />
-      ) : (
+      {!showForm ? (
         <>
           <section className="actions">
             <Button theme="icon" aria-label="Add item" className='button' onClick={handleCreateUser}>
@@ -127,12 +136,21 @@ export default function UserGrid() {
               <Icon className='fa-regular fa-trash-can' />
             </Button>
           </section>
-          {errorMessage && <div className="error-message">{errorMessage}</div>}
           <section className="grid-container">
+            <div className='div-search'>
+            <TextField
+              label="Filtrar por nome"
+              value={filter}
+              onChange={handleFilterChange}
+              fullWidth
+              className=""
+            />
+            </div>
             <Grid
-              items={users}
+              items={filteredUsers}
               theme="row-stripes"
               onActiveItemChanged={({ detail: { value } }) => handleEditUser(value as User)}
+              className='grid-component'
             >
               <GridColumn
                 headerRenderer={() => (
@@ -154,9 +172,18 @@ export default function UserGrid() {
               </GridColumn>
             </Grid>
           </section>
-          <ToastContainer />
         </>
+      ) : (
+        <UserForm
+          onSubmit={() => {
+            setShowForm(false);
+            toast.success('Usuário salvo com sucesso!', { theme: 'colored' });
+            setRefreshKey(prev => prev + 1);
+          }}
+          selectedUser={selectedUserForEdit}
+        />
       )}
+      <ToastContainer />
     </React.Fragment>
   );
 }

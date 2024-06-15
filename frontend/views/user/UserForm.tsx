@@ -2,15 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@hilla/react-components/Button.js';
 import { FormLayout } from '@hilla/react-components/FormLayout.js';
 import { Icon } from '@hilla/react-components/Icon.js';
-import { PasswordField } from '@hilla/react-components/PasswordField.js';
-import { TextField } from '@hilla/react-components/TextField.js';
-import { Tooltip } from '@hilla/react-components/Tooltip.js';
 import { useNavigate } from 'react-router-dom';
 import { createUser, updateUser } from 'Frontend/util/UserService';
 import { User } from 'Frontend/models/User';
 import { Role } from 'Frontend/models/Role';
 import Select from 'react-select';
 import { Notification } from '@hilla/react-components/Notification.js';
+import TextField from '@mui/material/TextField';
+import { Tooltip } from '@hilla/react-components/Tooltip.js';
 
 interface UserFormProps {
   onSubmit: () => void;
@@ -93,6 +92,16 @@ export default function UserForm({ onSubmit, selectedUser }: UserFormProps) {
     setRoles(selectedRoles);
   };
 
+  const customStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      width: '100%',
+      marginTop: '16px',
+      marginBottom: '16px',
+      padding: '8px',
+    }),
+  };
+
   const responsiveSteps = [
     { minWidth: '0', columns: 1 },
     { minWidth: '500px', columns: 2 },
@@ -111,10 +120,45 @@ export default function UserForm({ onSubmit, selectedUser }: UserFormProps) {
         </Button>
       </section>
       <section className="form-container">
-        <FormLayout responsiveSteps={responsiveSteps}>
-          <TextField {...{ colspan: 2 }} label="Usuário" value={username} onChange={(e) => setUsername(e.target.value)} required />
-          <TextField label="Nome" value={name} onChange={(e) => setName(e.target.value)} required />
+        <FormLayout responsiveSteps={responsiveSteps} className='form-layout'>
+          
+          <TextField
+            label="Usuário"
+            value={username}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+            required
+            fullWidth
+            className="usuario-field"
+          />
+          <TextField
+            label="Nome"
+            value={name}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+            required
+            fullWidth
+            className="input-field"
+          />
+          
+          <TextField
+            label="Senha"
+            type="password"
+            value={password}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+            required={!selectedUser}
+            fullWidth
+            className="input-field"
+          />
+          <TextField
+            label="Confirme a senha"
+            type="password"
+            value={confirmPassword}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+            required={!selectedUser}
+            fullWidth
+            className="input-field"
+          />
           <Select
+            {...{ colspan: 2 }}
             placeholder="Roles"
             isMulti
             name="roles"
@@ -123,9 +167,8 @@ export default function UserForm({ onSubmit, selectedUser }: UserFormProps) {
             classNamePrefix="select"
             value={roles.map(role => ({ value: role, label: role }))}
             onChange={handleRoleChange}
+            styles={customStyles}
           />
-          <PasswordField label="Senha" value={password} onChange={(e) => setPassword(e.target.value)} required={!selectedUser} />
-          <PasswordField label="Confirme a senha" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required={!selectedUser} />
         </FormLayout>
       </section>
     </React.Fragment>

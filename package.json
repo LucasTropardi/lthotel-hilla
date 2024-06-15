@@ -3,6 +3,8 @@
   "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@hilla/form": "2.5.7",
     "@hilla/frontend": "2.5.7",
     "@hilla/generator-typescript-cli": "2.5.7",
@@ -18,6 +20,7 @@
     "@hilla/react-components": "2.3.0",
     "@hilla/react-crud": "2.5.7",
     "@hilla/react-form": "2.5.7",
+    "@mui/material": "^5.15.20",
     "@polymer/polymer": "3.5.1",
     "@vaadin/bundles": "24.3.0",
     "@vaadin/common-frontend": "0.0.19",
@@ -79,7 +82,10 @@
     "@hilla/generator-typescript-plugin-backbone": "$@hilla/generator-typescript-plugin-backbone",
     "@hilla/generator-typescript-cli": "$@hilla/generator-typescript-cli",
     "react-select": "$react-select",
-    "react-toastify": "$react-toastify"
+    "react-toastify": "$react-toastify",
+    "@emotion/react": "$@emotion/react",
+    "@emotion/styled": "$@emotion/styled",
+    "@mui/material": "$@mui/material"
   },
   "vaadin": {
     "dependencies": {
@@ -123,6 +129,6 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "9f042b1c29e44370af30b012af4d45b4e297a57c791b7c42b7bdb58777bb5cb5"
+    "hash": "facc662b46a6005065d9b0d6cd7305bbdac9f23ad09712b1352cc0791ac27981"
   }
 }

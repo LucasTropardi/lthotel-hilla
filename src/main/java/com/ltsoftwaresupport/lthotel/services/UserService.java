@@ -50,4 +50,8 @@ public class UserService {
     public User save(User entity) {
         return repository.save(entity);
     }
+
+    public List<User> findByName(String name) {
+        return repository.findByNameContainingIgnoreCase(name);
+    }
 }

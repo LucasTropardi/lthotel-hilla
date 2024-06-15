@@ -51,6 +51,10 @@ public class UserEndpoint {
     }
 
     public @Nonnull User updateUser(@Nonnull Long id, @Nonnull User user) {
+        if (user.getHashedPassword() != null && !user.getHashedPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(user.getHashedPassword());
+            user.setHashedPassword(encodedPassword);
+        }
         user.setId(id);
         return userService.update(user);
     }
@@ -70,5 +74,9 @@ public class UserEndpoint {
     }
 
     public @Nonnull List<User> listAllUsers() { return userService.listAll(); }
+
+    public List<User> listUsersByName(String name) {
+        return userService.findByName(name);
+    }
 
 }

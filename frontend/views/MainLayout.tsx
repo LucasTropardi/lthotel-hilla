@@ -41,7 +41,7 @@ export default function MainLayout() {
     <AppLayout primarySection="drawer">
       <div slot="drawer" className="flex flex-col justify-between h-full p-m">
         <header className="flex flex-col gap-m">
-          <span className="font-semibold text-l">My App</span>
+          <img style={{ width: '200px' }} src="images/PMS-LT.png" />
           <nav>
             {state.user ? (
               <NavLink className={navLinkClasses} to="/">
