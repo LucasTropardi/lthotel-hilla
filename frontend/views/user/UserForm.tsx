@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@hilla/react-components/Button.js';
+import React, { useState, useEffect, FormEvent } from 'react';
 import { FormLayout } from '@hilla/react-components/FormLayout.js';
-import { Icon } from '@hilla/react-components/Icon.js';
 import { useNavigate } from 'react-router-dom';
 import { createUser, updateUser } from 'Frontend/util/UserService';
 import { User } from 'Frontend/models/User';
 import { Role } from 'Frontend/models/Role';
 import Select from 'react-select';
-import { Notification } from '@hilla/react-components/Notification.js';
 import TextField from '@mui/material/TextField';
-import { Tooltip } from '@hilla/react-components/Tooltip.js';
+import { ErrorWithMessage } from 'Frontend/types/ErrorTypes';
+import ActionBar from 'Frontend/components/ActionBar';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ErrorWithMessage } from 'Frontend/types/ErrorTypes';
 
 interface UserFormProps {
   onSubmit: () => void;
@@ -38,7 +35,7 @@ export default function UserForm({ onSubmit, selectedUser }: UserFormProps) {
     }
   }, [selectedUser]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast.error('As senhas não coincidem', { theme: 'colored' });
@@ -81,7 +78,8 @@ export default function UserForm({ onSubmit, selectedUser }: UserFormProps) {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     onSubmit();
     navigate('/user');
   };
@@ -108,19 +106,14 @@ export default function UserForm({ onSubmit, selectedUser }: UserFormProps) {
 
   return (
     <React.Fragment>
-      <section className="actions">
-        <Button theme="icon" aria-label="Save" className='button' onClick={handleSubmit} >
-          <Tooltip slot="tooltip" text="Salvar" />
-          <Icon className='fa-solid fa-check' />
-        </Button>
-        <Button theme="icon" aria-label="Cancel" className='button' onClick={handleCancel}>
-          <Tooltip slot="tooltip" text="Cancelar" />
-          <Icon className='fa-solid fa-xmark' />
-        </Button>
-      </section>
+      <ActionBar
+        buttons={[
+          { label: "Save", icon: "fa-solid fa-check", onClick: handleSubmit as any, tooltipText: "Salvar", show: true },
+          { label: "Cancel", icon: "fa-solid fa-xmark", onClick: handleCancel, tooltipText: "Cancelar", show: true }
+        ]}
+      />
       <section className="form-container">
         <FormLayout responsiveSteps={responsiveSteps} className='form-layout'>
-          
           <TextField
             label="Usuário"
             value={username}
@@ -137,7 +130,6 @@ export default function UserForm({ onSubmit, selectedUser }: UserFormProps) {
             fullWidth
             className="input-field"
           />
-          
           <TextField
             label="Senha"
             type="password"

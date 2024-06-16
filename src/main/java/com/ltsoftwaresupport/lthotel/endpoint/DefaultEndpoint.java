@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Lucas Tropardi
@@ -53,4 +54,10 @@ public class DefaultEndpoint<T, ID, R extends JpaRepository<T, ID>> {
     public T load(ID id) throws DefaultException {
         return repository.findById(id).orElseThrow(() -> new DefaultException("Não existe"));
     }
+
+    public Optional<T> get(ID id) {
+        return repository.findById(id);
+    }
+
+    public int count() { return (int) repository.count(); }
 }

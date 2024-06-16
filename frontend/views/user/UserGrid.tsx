@@ -4,17 +4,16 @@ import { GridColumn } from '@hilla/react-components/GridColumn.js';
 import { Checkbox } from '@hilla/react-components/Checkbox.js';
 import { useUser } from 'Frontend/hooks/useUser';
 import { User } from 'Frontend/models/User';
-import { Button } from '@hilla/react-components/Button.js';
-import { Icon } from '@hilla/react-components/Icon.js';
-import { Tooltip } from '@hilla/react-components/Tooltip.js';
 import { useNavigate } from 'react-router-dom';
 import UserForm from './UserForm';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { deleteUsers, getUsersByName } from 'Frontend/util/UserService';
-import TextField from '@mui/material/TextField'; // Importando TextField do material-ui
+import TextField from '@mui/material/TextField';
 import { Notification } from '@hilla/react-components/Notification.js';
 import { Dialog } from '@hilla/react-components/Dialog.js';
+import ActionBar from 'Frontend/components/ActionBar';
+import { Button } from '@hilla/react-components/Button.js';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function UserGrid() {
   const { users, loading, error, refetch } = useUser();
@@ -139,20 +138,13 @@ export default function UserGrid() {
     <React.Fragment>
       {!showForm ? (
         <>
-          <section className="actions">
-            <Button theme="icon" aria-label="Add item" className='button' onClick={handleCreateUser}>
-              <Tooltip slot="tooltip" text="Novo usuário" />
-              <Icon className='fa-solid fa-plus' />
-            </Button>
-            <Button theme="icon" aria-label="Update item" className='button' onClick={handleUpdateUser}>
-              <Tooltip slot="tooltip" text="Atualizar" />
-              <Icon className='fa-solid fa-pen-to-square' />
-            </Button>
-            <Button theme="icon" aria-label="Delete item" className='button' onClick={openDeleteDialog}>
-              <Tooltip slot="tooltip" text="Excluir" />
-              <Icon className='fa-regular fa-trash-can' />
-            </Button>
-          </section>
+          <ActionBar
+            buttons={[
+              { label: "Add item", icon: "fa-solid fa-plus", onClick: handleCreateUser, tooltipText: "Novo usuário", show: true },
+              { label: "Update item", icon: "fa-solid fa-pen-to-square", onClick: handleUpdateUser, tooltipText: "Atualizar", show: true },
+              { label: "Delete item", icon: "fa-regular fa-trash-can", onClick: openDeleteDialog, tooltipText: "Excluir", show: true }
+            ]}
+          />
           <section className="grid-container">
             <div className='div-search'>
               <TextField
@@ -202,7 +194,6 @@ export default function UserGrid() {
       )}
       <ToastContainer />
 
-      {/* Diálogo de confirmação de deleção */}
       <Dialog
         headerTitle="Deseja realmente apagar os dados selecionados?"
         opened={dialogOpened}
