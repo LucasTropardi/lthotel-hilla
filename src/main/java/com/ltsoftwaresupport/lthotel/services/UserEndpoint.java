@@ -1,6 +1,7 @@
 package com.ltsoftwaresupport.lthotel.services;
 
 import com.ltsoftwaresupport.lthotel.data.User;
+import com.ltsoftwaresupport.lthotel.exception.DefaultException;
 import com.ltsoftwaresupport.lthotel.security.AuthenticatedUser;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.Endpoint;
@@ -37,7 +38,7 @@ public class UserEndpoint {
         return userService.get(id);
     }
 
-    public @Nonnull User createUser(@Nonnull User user) {
+    public @Nonnull User createUser(@Nonnull User user) throws DefaultException {
         if (user.getHashedPassword() != null && !user.getHashedPassword().isEmpty()) {
             String encodedPassword = passwordEncoder.encode(user.getHashedPassword());
             user.setHashedPassword(encodedPassword);

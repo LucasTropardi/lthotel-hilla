@@ -5,6 +5,9 @@ import com.ltsoftwaresupport.lthotel.data.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.ltsoftwaresupport.lthotel.exception.DefaultException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -47,8 +50,12 @@ public class UserService {
         return (int) repository.count();
     }
 
-    public User save(User entity) {
-        return repository.save(entity);
+    public User save(User entity) throws DefaultException {
+        try {
+            return repository.save(entity);
+        } catch (DataIntegrityViolationException e) {
+            throw new DefaultException("Usuário já cadastrado");
+        }
     }
 
     public List<User> findByName(String name) {

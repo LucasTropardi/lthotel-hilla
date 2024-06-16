@@ -31,8 +31,7 @@ const routing = protectRoutes([
         element: <ProtectedRoute rolesAllowed={[Role.ADMIN]} />,
         handle: { title: 'Usuários', requiresLogin: true },
         children: [
-          { path: '', element: <UserGrid />, handle: { title: 'Usuários', requiresLogin: true } },
-          { path: 'new', element: <UserFormWrapper />, handle: { title: 'Novo Usuário', requiresLogin: true } },
+          { path: '', element: <UserGrid />, handle: { title: 'Gerenciamento de usuários', requiresLogin: true } },
         ]
       },
     ],

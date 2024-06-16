@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 
 const loginI18n: LoginI18n = {
   ...new LoginOverlayElement().i18n,
-  header: { title: 'LT-HOTEL' },
+  header: { title: 'PMS-LT' },
   form: {
-    title: 'Login',
+    title: '',
     username: 'Usuário',
     password: 'Senha',
     submit: 'Entrar',

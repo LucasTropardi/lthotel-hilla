@@ -1,22 +1,19 @@
 package com.ltsoftwaresupport.lthotel.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Set;
 
 @Entity
-@Table(name = "application_user")
+@Table(name = "application_user", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"username"})
+})
 public class User extends AbstractEntity {
 
+    @NotBlank
     private String username;
     private String name;
     private String hashedPassword;

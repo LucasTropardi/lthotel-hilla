@@ -14,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { deleteUsers, getUsersByName } from 'Frontend/util/UserService';
 import TextField from '@mui/material/TextField'; // Importando TextField do material-ui
 import { Notification } from '@hilla/react-components/Notification.js';
+import { Dialog } from '@hilla/react-components/Dialog.js';
 
 export default function UserGrid() {
   const { users, loading, error, refetch } = useUser();
@@ -24,6 +25,8 @@ export default function UserGrid() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [filter, setFilter] = useState('');
+  const [dialogOpened, setDialogOpened] = useState(false);
+  const [selectedUsersForDeletion, setSelectedUsersForDeletion] = useState<Set<User>>(new Set());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +42,10 @@ export default function UserGrid() {
   useEffect(() => {
     setFilteredUsers(users);
   }, [users]);
+
+  useEffect(() => {
+    document.title = showForm ? 'Usuário' : 'Usuários';
+  }, [showForm]);
 
   const handleFilterChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -76,18 +83,25 @@ export default function UserGrid() {
 
   const isAllSelected = selectedUsers.size === users.length;
 
-  const handleDeleteSelected = async () => {
+  const openDeleteDialog = () => {
     if (selectedUsers.size === 0) {
       toast.warning('Selecione pelo menos um usuário para apagar', { theme: 'colored' });
       return;
     }
+    setSelectedUsersForDeletion(new Set(selectedUsers));
+    setDialogOpened(true);
+  };
+
+  const handleDeleteSelectedConfirmed = async () => {
     setErrorMessage(null);
     try {
-      const selectedUserIds = Array.from(selectedUsers).map(user => user.id);
+      const selectedUserIds = Array.from(selectedUsersForDeletion).map(user => user.id);
       await deleteUsers(selectedUserIds);
       toast.success('Usuários deletados com sucesso!', { theme: 'colored' });
       setSelectedUsers(new Set());
+      setSelectedUsersForDeletion(new Set());
       setRefreshKey(prev => prev + 1);
+      setDialogOpened(false);
       Notification.show('Informações excluídas', {
         theme: "success",
         position: 'top-end',
@@ -109,8 +123,11 @@ export default function UserGrid() {
   };
 
   const handleUpdateUser = () => {
-    if (selectedUsers.size !== 1) {
-      toast.warning('Seleciona apenas um usuário para edição', { theme: 'colored' });
+    if (selectedUsers.size === 0) {
+      toast.warning('Selecione um usuário para editar', { theme: 'colored' });
+      return;
+    } else if (selectedUsers.size !== 1) {
+      toast.warning('Selecione apenas um usuário para edição', { theme: 'colored' });
       return;
     }
     const selectedUser = Array.from(selectedUsers)[0];
@@ -131,20 +148,20 @@ export default function UserGrid() {
               <Tooltip slot="tooltip" text="Atualizar" />
               <Icon className='fa-solid fa-pen-to-square' />
             </Button>
-            <Button theme="icon" aria-label="Delete item" className='button' onClick={handleDeleteSelected}>
+            <Button theme="icon" aria-label="Delete item" className='button' onClick={openDeleteDialog}>
               <Tooltip slot="tooltip" text="Excluir" />
               <Icon className='fa-regular fa-trash-can' />
             </Button>
           </section>
           <section className="grid-container">
             <div className='div-search'>
-            <TextField
-              label="Filtrar por nome"
-              value={filter}
-              onChange={handleFilterChange}
-              fullWidth
-              className=""
-            />
+              <TextField
+                label="Filtrar por nome"
+                value={filter}
+                onChange={handleFilterChange}
+                fullWidth
+                className=""
+              />
             </div>
             <Grid
               items={filteredUsers}
@@ -184,6 +201,20 @@ export default function UserGrid() {
         />
       )}
       <ToastContainer />
+
+      {/* Diálogo de confirmação de deleção */}
+      <Dialog
+        headerTitle="Deseja realmente apagar os dados selecionados?"
+        opened={dialogOpened}
+        onOpenedChanged={(event) => setDialogOpened(event.detail.value)}
+        footerRenderer={() => (
+          <div className="button-container">
+            <Button theme="tertiary" onClick={() => setDialogOpened(false)}>Cancelar</Button>
+            <Button theme="primary error" onClick={handleDeleteSelectedConfirmed}>Sim</Button>
+          </div>
+        )}
+      >
+      </Dialog>
     </React.Fragment>
   );
 }

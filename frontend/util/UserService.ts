@@ -1,6 +1,7 @@
 import { UserEndpoint } from 'Frontend/generated/endpoints';
 import { User } from 'Frontend/models/User';
 import Pageable from 'Frontend/generated/dev/hilla/mappedtypes/Pageable';
+import { ErrorWithMessage } from 'Frontend/types/ErrorTypes';
 
 export async function getUsers(): Promise<User[]> {
   const pageable: Pageable = {
@@ -36,13 +37,20 @@ export async function getUsersByName(name: string): Promise<User[]> {
   }));
 }
 
-
 export async function createUser(user: User): Promise<User> {
   const newUser = {
     ...user,
     profilePicture: Array.from(user.profilePicture)
   };
-  return UserEndpoint.createUser(newUser as any);
+  try {
+    return await UserEndpoint.createUser(newUser as any);
+  } catch (error: unknown) {
+    const e = error as ErrorWithMessage;
+    if (e.message.includes('Duplicate entry')) {
+      throw new Error('Duplicate entry for username.');
+    }
+    throw new Error('Error creating user.');
+  }
 }
 
 export async function updateUser(id: number, user: User): Promise<User> {
@@ -50,7 +58,15 @@ export async function updateUser(id: number, user: User): Promise<User> {
     ...user,
     profilePicture: Array.from(user.profilePicture)
   };
-  return UserEndpoint.updateUser(id, updatedUser as any);
+  try {
+    return await UserEndpoint.updateUser(id, updatedUser as any);
+  } catch (error: unknown) {
+    const e = error as ErrorWithMessage;
+    if (e.message.includes('Duplicate entry')) {
+      throw new Error('Duplicate entry for username.');
+    }
+    throw new Error('Error updating user.');
+  }
 }
 
 export async function getUser(id: number): Promise<User> {

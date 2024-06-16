@@ -10,6 +10,9 @@ import Select from 'react-select';
 import { Notification } from '@hilla/react-components/Notification.js';
 import TextField from '@mui/material/TextField';
 import { Tooltip } from '@hilla/react-components/Tooltip.js';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ErrorWithMessage } from 'Frontend/types/ErrorTypes';
 
 interface UserFormProps {
   onSubmit: () => void;
@@ -24,7 +27,6 @@ export default function UserForm({ onSubmit, selectedUser }: UserFormProps) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [roles, setRoles] = useState<Role[]>([]);
   const [profilePicture, setProfilePicture] = useState<number[]>([]);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const roleItems = Object.values(Role).map(role => ({ value: role, label: role }));
 
   useEffect(() => {
@@ -39,11 +41,7 @@ export default function UserForm({ onSubmit, selectedUser }: UserFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      Notification.show('As senhas não coincidem', {
-        theme: "error",
-        position: 'top-center',
-        duration: 2500,
-      });
+      toast.error('As senhas não coincidem', { theme: 'colored' });
       return;
     }
 
@@ -57,29 +55,30 @@ export default function UserForm({ onSubmit, selectedUser }: UserFormProps) {
       profilePicture
     };
 
-    if (selectedUser) {
-      if (!password) {
-        delete newUser.hashedPassword;
+    try {
+      if (selectedUser) {
+        if (!password) {
+          delete newUser.hashedPassword;
+        }
+        await updateUser(selectedUser.id, newUser);
+      } else {
+        if (!password) {
+          toast.warning('Informe a senha', { theme: 'colored' });
+          return;
+        }
+        await createUser(newUser);
       }
-      await updateUser(selectedUser.id, newUser);
-    } else {
-      if (!password) {
-        Notification.show('Informe a senha', {
-          position: 'top-center',
-          theme: 'warning',
-          duration: 2600,
-        });
-        return;
+      onSubmit();
+      navigate('/user');
+      toast.success('Informações salvas', { theme: 'colored' });
+    } catch (error) {
+      const e = error as ErrorWithMessage;
+      if (e.message === 'Duplicate entry for username.') {
+        toast.error('Erro: Nome de usuário duplicado.', { theme: 'colored' });
+      } else {
+        toast.error('Erro ao salvar usuário.', { theme: 'colored' });
       }
-      await createUser(newUser);
     }
-    onSubmit();
-    navigate('/user');
-    Notification.show('Informações salvas', {
-      theme: "success",
-      position: 'top-end',
-      duration: 2000,
-    });
   };
 
   const handleCancel = () => {
@@ -171,6 +170,7 @@ export default function UserForm({ onSubmit, selectedUser }: UserFormProps) {
           />
         </FormLayout>
       </section>
+      <ToastContainer />
     </React.Fragment>
   );
 }

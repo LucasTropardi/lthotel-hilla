@@ -87,16 +87,16 @@ export default function MainLayout() {
 
       {/* Diálogo de confirmação de logout */}
       <Dialog
+        headerTitle="Tem certeza que deseja sair?"
         opened={dialogOpened}
         onOpenedChanged={(event) => setDialogOpened(event.detail.value)}
-      >
-        <div className="confirm-logout">
-          <span className="confirm-message">Tem certeza de que deseja sair?</span>
+        footerRenderer={() => (
           <div className="button-container">
             <Button theme="tertiary" onClick={() => setDialogOpened(false)}>Cancelar</Button>
             <Button theme="primary error" onClick={handleLogout}>Sim</Button>
           </div>
-        </div>
+        )}
+      >
       </Dialog>
     </AppLayout>
   );
