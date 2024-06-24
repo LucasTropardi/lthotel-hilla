@@ -6,6 +6,9 @@ import com.ltsoftwaresupport.lthotel.model.Guest;
 import com.ltsoftwaresupport.lthotel.repository.GuestRepository;
 import dev.hilla.Endpoint;
 import jakarta.annotation.security.RolesAllowed;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * @author Lucas Tropardi
@@ -13,30 +16,29 @@ import jakarta.annotation.security.RolesAllowed;
  */
 @Endpoint
 @RolesAllowed({"ADMIN", "USER"})
-public class GuestEndpoint extends DefaultEndpoint<Guest, Long, GuestRepository> {
-    public GuestEndpoint(GuestRepository repository) {
-        super(repository);
+public class GuestEndpoint {
+    GuestRepository repository;
+    public GuestEndpoint(@Autowired GuestRepository repository) {
+        this.repository = repository;
     }
 
-    @Override
-    protected void validate(Guest entity, DefaultEndpoint.Mode mode) throws DefaultException {
-        super.validate(entity, mode);
+    public List<Guest> list() throws DefaultException {
+        return repository.findAll();
+    }
 
-        switch (mode) {
-            case SAVE:
-                System.out.println("save");
-                if (repository.existsById(entity.getId())) throw new DefaultException("Hóspede já cadastrado.");
-                break;
+    public Guest load(Long id) throws DefaultException {
+        return repository.findById(id).orElseThrow(() -> new DefaultException("Não existe"));
+    }
 
-            case UPDATE:
-                System.out.println("update");
-                if (!repository.existsById(entity.getId())) throw new DefaultException("Hóspede não cadastrado.");
-                break;
+    public Guest save(Guest guest) throws DefaultException {
+        return repository.save(guest);
+    }
 
-            case DELETE:
-                System.out.println("delete");
-//                if (!repository.existsById(entity.getId())) throw new DefaultException("Hospede não cadastrado.");
-                break;
-        }
+    public Guest update(Guest guest) throws DefaultException {
+        return repository.save(guest);
+    }
+
+    public void delete(Long id) throws DefaultException {
+        repository.deleteById(id);
     }
 }

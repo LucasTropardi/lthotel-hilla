@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpecificationExecutor<Company> {
+public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("SELECT c FROM Company c WHERE LOWER(c.razaoSocial) LIKE LOWER(CONCAT('%', :razaoSocial, '%'))")
     List<Company> findByRazaoSocialContainingIgnoreCase(String razaoSocial);
 }

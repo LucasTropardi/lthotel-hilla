@@ -1,9 +1,6 @@
 package com.ltsoftwaresupport.lthotel.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -12,16 +9,27 @@ import lombok.NoArgsConstructor;
  * @author Lucas Tropardi
  * 16 de Jun. de 2024
  */
-@Entity(name = "State")
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "state")
-public class State extends DefaultObject {
+public class State {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
     @NotBlank
     private String name;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Country getCountry() {
         return country;

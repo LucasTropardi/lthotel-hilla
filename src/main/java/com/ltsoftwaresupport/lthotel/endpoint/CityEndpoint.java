@@ -5,6 +5,9 @@ import com.ltsoftwaresupport.lthotel.model.City;
 import com.ltsoftwaresupport.lthotel.repository.CityRepository;
 import dev.hilla.Endpoint;
 import jakarta.annotation.security.RolesAllowed;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * @author Lucas Tropardi
@@ -12,30 +15,29 @@ import jakarta.annotation.security.RolesAllowed;
  */
 @Endpoint
 @RolesAllowed({"ADMIN", "USER"})
-public class CityEndpoint extends DefaultEndpoint<City, Long, CityRepository> {
-    public CityEndpoint(CityRepository repository) {
-        super(repository);
+public class CityEndpoint {
+    CityRepository repository;
+    public CityEndpoint(@Autowired CityRepository repository) {
+        this.repository = repository;
     }
 
-    @Override
-    protected void validate(City entity, DefaultEndpoint.Mode mode) throws DefaultException {
-        super.validate(entity, mode);
+    public List<City> list() throws DefaultException {
+        return repository.findAll();
+    }
 
-        switch (mode) {
-            case SAVE:
-                System.out.println("save");
-                if (repository.existsById(entity.getId())) throw new DefaultException("Cidade já cadastrada.");
-                break;
+    public City load(Long id) throws DefaultException {
+        return repository.findById(id).orElseThrow(() -> new DefaultException("Não existe"));
+    }
 
-            case UPDATE:
-                System.out.println("update");
-                if (!repository.existsById(entity.getId())) throw new DefaultException("Cidade não cadastrada.");
-                break;
+    public City save(City city) throws DefaultException {
+        return repository.save(city);
+    }
 
-            case DELETE:
-                System.out.println("delete");
-//                if (!repository.existsById(entity.getId())) throw new DefaultException("Cidade não cadastrada.");
-                break;
-        }
+    public City update(City city) throws DefaultException {
+        return repository.save(city);
+    }
+
+    public void delete(Long id) throws DefaultException {
+        repository.deleteById(id);
     }
 }

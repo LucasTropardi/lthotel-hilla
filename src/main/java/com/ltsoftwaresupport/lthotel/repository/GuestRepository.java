@@ -14,7 +14,7 @@ import java.util.List;
  * 16 de Jun. de 2024
  */
 @Repository
-public interface GuestRepository extends JpaRepository<Guest, Long>, JpaSpecificationExecutor<Guest> {
+public interface GuestRepository extends JpaRepository<Guest, Long> {
     @Query("SELECT g FROM Guest g WHERE LOWER(g.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR LOWER(g.lastname) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR LOWER(CONCAT(g.name, ' ', g.lastname)) LIKE LOWER(CONCAT('%', :name, '%'))")

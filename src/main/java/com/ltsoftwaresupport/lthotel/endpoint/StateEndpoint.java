@@ -5,6 +5,9 @@ import com.ltsoftwaresupport.lthotel.model.State;
 import com.ltsoftwaresupport.lthotel.repository.StateRepository;
 import dev.hilla.Endpoint;
 import jakarta.annotation.security.RolesAllowed;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * @author Lucas Tropardi
@@ -12,30 +15,30 @@ import jakarta.annotation.security.RolesAllowed;
  */
 @Endpoint
 @RolesAllowed({"ADMIN", "USER"})
-public class StateEndpoint extends DefaultEndpoint<State, Long, StateRepository> {
-    public StateEndpoint(StateRepository repository) {
-        super(repository);
+public class StateEndpoint {
+
+    StateRepository repository;
+    public StateEndpoint(@Autowired StateRepository repository) {
+        this.repository = repository;
     }
 
-    @Override
-    protected void validate(State entity, DefaultEndpoint.Mode mode) throws DefaultException {
-        super.validate(entity, mode);
+    public List<State> list() throws DefaultException {
+        return repository.findAll();
+    }
 
-        switch (mode) {
-            case SAVE:
-                System.out.println("save");
-                if (repository.existsById(entity.getId())) throw new DefaultException("Estado já cadastrado.");
-                break;
+    public State load(Long id) throws DefaultException {
+        return repository.findById(id).orElseThrow(() -> new DefaultException("Não existe"));
+    }
 
-            case UPDATE:
-                System.out.println("update");
-                if (!repository.existsById(entity.getId())) throw new DefaultException("Estado não cadastrado.");
-                break;
+    public State save(State state) throws DefaultException {
+        return repository.save(state);
+    }
 
-            case DELETE:
-                System.out.println("delete");
-//                if (!repository.existsById(entity.getId())) throw new DefaultException("Estado não cadastrado.");
-                break;
-        }
+    public State update(State state) throws DefaultException {
+        return repository.save(state);
+    }
+
+    public void delete(Long id) throws DefaultException {
+        repository.deleteById(id);
     }
 }

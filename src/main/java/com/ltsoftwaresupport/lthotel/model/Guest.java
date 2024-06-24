@@ -12,13 +12,16 @@ import java.time.LocalDate;
  * @author Lucas Tropardi
  * 16 de Jun. de 2024
  */
-@Entity(name = "Guest")
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "guest", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"cnpj"})
 })
-public class Guest extends DefaultObject {
+public class Guest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @NotBlank
     private String name;
     @NotBlank
@@ -50,6 +53,14 @@ public class Guest extends DefaultObject {
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = true)
     private Company company;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public @NotBlank String getName() {
         return name;

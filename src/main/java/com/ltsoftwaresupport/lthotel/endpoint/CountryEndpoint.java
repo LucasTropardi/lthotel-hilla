@@ -6,37 +6,40 @@ import com.ltsoftwaresupport.lthotel.repository.CountryRepository;
 import dev.hilla.Endpoint;
 import jakarta.annotation.security.RolesAllowed;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * @author Lucas Tropardi
  * 16 de Jun. de 2024
  */
 @Endpoint
 @RolesAllowed({"ADMIN", "USER"})
-public class CountryEndpoint extends DefaultEndpoint<Country, Long, CountryRepository> {
+public class CountryEndpoint {
+
+    CountryRepository repository;
 
     public CountryEndpoint(CountryRepository repository) {
-        super(repository);
+        this.repository = repository;
     }
 
-    @Override
-    protected void validate(Country entity, DefaultEndpoint.Mode mode) throws DefaultException {
-        super.validate(entity, mode);
+    public List<Country> list() throws DefaultException {
+        return repository.findAll();
+    }
 
-        switch (mode) {
-            case SAVE:
-                System.out.println("save");
-                if (repository.existsById(entity.getId())) throw new DefaultException("País já cadastrado.");
-                break;
+    public Country load(Long id) throws DefaultException {
+        return repository.findById(id).orElseThrow(() -> new DefaultException("Não existe"));
+    }
 
-            case UPDATE:
-                System.out.println("update");
-                if (!repository.existsById(entity.getId())) throw new DefaultException("País não cadastrado.");
-                break;
+    public Country save(Country country) throws DefaultException {
+        return repository.save(country);
+    }
 
-            case DELETE:
-                System.out.println("delete");
-//                if (!repository.existsById(entity.getId())) throw new DefaultException("País não cadastrado.");
-                break;
-        }
+    public Country update(Country country) throws DefaultException {
+        return repository.save(country);
+    }
+
+    public void delete(Long id) throws DefaultException {
+        repository.deleteById(id);
     }
 }

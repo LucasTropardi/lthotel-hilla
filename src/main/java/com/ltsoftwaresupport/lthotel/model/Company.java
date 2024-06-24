@@ -9,13 +9,16 @@ import lombok.NoArgsConstructor;
  * @author Lucas Tropardi
  * 16 de Jun. de 2024
  */
-@Entity(name = "Company")
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "company", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"cnpj"})
 })
-public class Company extends DefaultObject {
+public class Company {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @NotBlank
     private String razaoSocial;
     @NotBlank
@@ -33,6 +36,14 @@ public class Company extends DefaultObject {
     private String email;
     @NotBlank
     private String telefone;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public @NotBlank String getRazaoSocial() {
         return razaoSocial;

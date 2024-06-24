@@ -5,6 +5,9 @@ import com.ltsoftwaresupport.lthotel.model.Company;
 import com.ltsoftwaresupport.lthotel.repository.CompanyRepository;
 import dev.hilla.Endpoint;
 import jakarta.annotation.security.RolesAllowed;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * @author Lucas Tropardi
@@ -12,30 +15,29 @@ import jakarta.annotation.security.RolesAllowed;
  */
 @Endpoint
 @RolesAllowed({"ADMIN", "USER"})
-public class CompanyEndpoint extends DefaultEndpoint<Company, Long, CompanyRepository> {
-    public CompanyEndpoint(CompanyRepository repository) {
-        super(repository);
+public class CompanyEndpoint {
+    CompanyRepository repository;
+    public CompanyEndpoint(@Autowired CompanyRepository repository) {
+        this.repository = repository;
     }
 
-    @Override
-    protected void validate(Company entity, DefaultEndpoint.Mode mode) throws DefaultException {
-        super.validate(entity, mode);
+    public List<Company> list() throws DefaultException {
+        return repository.findAll();
+    }
 
-        switch (mode) {
-            case SAVE:
-                System.out.println("save");
-                if (repository.existsById(entity.getId())) throw new DefaultException("Empresa já cadastrada.");
-                break;
+    public Company load(Long id) throws DefaultException {
+        return repository.findById(id).orElseThrow(() -> new DefaultException("Não existe"));
+    }
 
-            case UPDATE:
-                System.out.println("update");
-                if (!repository.existsById(entity.getId())) throw new DefaultException("Empresa não cadastrada.");
-                break;
+    public Company save(Company company) throws DefaultException {
+        return repository.save(company);
+    }
 
-            case DELETE:
-                System.out.println("delete");
-//                if (!repository.existsById(entity.getId())) throw new DefaultException("Empresa não cadastrada.");
-                break;
-        }
+    public Company update(Company company) throws DefaultException {
+        return repository.save(company);
+    }
+
+    public void delete(Long id) throws DefaultException {
+       repository.deleteById(id);
     }
 }

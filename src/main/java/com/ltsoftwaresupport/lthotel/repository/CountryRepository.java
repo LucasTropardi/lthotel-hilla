@@ -13,7 +13,7 @@ import java.util.List;
  * 16 de Jun. de 2024
  */
 @Repository
-public interface CountryRepository extends JpaRepository<Country, Long>, JpaSpecificationExecutor<Country> {
+public interface CountryRepository extends JpaRepository<Country, Long> {
     @Query("SELECT c FROM Country c WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<Country> findByNameContainingIgnoreCase(String name);
 }
