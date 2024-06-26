@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "state")
 public class State {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "country_id", nullable = false)

@@ -1,10 +1,14 @@
 package com.ltsoftwaresupport.lthotel.endpoint;
 
+import com.ltsoftwaresupport.lthotel.data.User;
 import com.ltsoftwaresupport.lthotel.exception.DefaultException;
 import com.ltsoftwaresupport.lthotel.model.Country;
 import com.ltsoftwaresupport.lthotel.repository.CountryRepository;
 import dev.hilla.Endpoint;
+import dev.hilla.Nonnull;
 import jakarta.annotation.security.RolesAllowed;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,4 +46,20 @@ public class CountryEndpoint {
     public void delete(Long id) throws DefaultException {
         repository.deleteById(id);
     }
+
+    public void deleteCountries(@Nonnull List<@Nonnull Long> ids) throws DefaultException{
+        for (Long id : ids) {
+            repository.deleteById(id);
+        }
+    }
+
+    public Page<Country> listCountries(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    public List<Country> listCountryByName(String name) {
+        return repository.findByNameContainingIgnoreCase(name);
+    }
+
+
 }

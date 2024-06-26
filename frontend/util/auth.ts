@@ -6,7 +6,7 @@ const getAuthenticatedUser = async () => {
   return await UserEndpoint.getAuthenticatedUser();
 };
 
-// Função para obter roles do usuário
+// Obter roles do usuï¿½rio
 const getRoles = (user: User) => {
   return user?.roles || [];
 };

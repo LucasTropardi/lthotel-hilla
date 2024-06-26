@@ -58,6 +58,11 @@ export default function MainLayout() {
                 Usuários
               </NavLink>
             ) : null}
+            {state.user ? (
+              <NavLink className={navLinkClasses} to="/country">
+                Países
+              </NavLink>
+            ) : null}
           </nav>
         </header>
         <footer className="flex flex-col gap-s">
