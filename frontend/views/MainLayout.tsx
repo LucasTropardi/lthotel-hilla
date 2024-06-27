@@ -48,11 +48,6 @@ export default function MainLayout() {
                 Hello World
               </NavLink>
             ) : null}
-            {state.user ? (
-              <NavLink className={navLinkClasses} to="/about">
-                About
-              </NavLink>
-            ) : null}
             {isAdmin ? (
               <NavLink className={navLinkClasses} to="/user">
                 Usuários

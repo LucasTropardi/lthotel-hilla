@@ -53,7 +53,7 @@ export async function createCountry(country: Omit<Country, 'id'>): Promise<Count
 
 export async function updateCountry(country: Country): Promise<Country> {
   try {
-    const result = await CountryEndpoint.save(country as any); // Supondo que o mesmo endpoint é usado para update
+    const result = await CountryEndpoint.save(country as any); 
     if (!result) {
       throw new Error('Failed to update country');
     }

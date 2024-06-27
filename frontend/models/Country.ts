@@ -1,6 +1,6 @@
 
 export interface Country {
   id?: number;
-    name?: string;
-    nationality?: string;
+  name?: string;
+  nationality?: string;
 }
