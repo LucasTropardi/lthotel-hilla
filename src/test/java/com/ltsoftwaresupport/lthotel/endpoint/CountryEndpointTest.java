@@ -30,7 +30,7 @@ public class CountryEndpointTest {
     @AfterEach
     void cleanup() throws DefaultException {
         if (savedCountry != null)
-            endpoint.delete(savedCountry);
+            endpoint.delete(savedCountry.getId());
     }
 
     private Country createCountry() throws DefaultException {
@@ -69,7 +69,7 @@ public class CountryEndpointTest {
     @Order(5)
     void delete() throws DefaultException {
         assertNotNull(savedCountry);
-        endpoint.delete(savedCountry);
+        endpoint.delete(savedCountry.getId());
         assertThrows(DefaultException.class, () -> endpoint.load(savedCountry.getId()));
     }
 }

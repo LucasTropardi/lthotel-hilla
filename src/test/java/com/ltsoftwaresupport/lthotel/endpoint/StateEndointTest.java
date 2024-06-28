@@ -38,9 +38,9 @@ public class StateEndointTest {
     @AfterEach
     void cleanup() throws DefaultException {
         if (savedState != null)
-            endpoint.delete(savedState);
+            endpoint.delete(savedState.getId());
         if (savedCountry != null)
-            countryEndpoint.delete(savedCountry);
+            countryEndpoint.delete(savedCountry.getId());
     }
 
     private State createState() throws DefaultException {
@@ -83,7 +83,7 @@ public class StateEndointTest {
     @Order(5)
     void delete() throws DefaultException {
         assertNotNull(savedState);
-        endpoint.delete(savedState);
+        endpoint.delete(savedState.getId());
         assertThrows(DefaultException.class, () -> endpoint.load(savedState.getId()));
     }
 }

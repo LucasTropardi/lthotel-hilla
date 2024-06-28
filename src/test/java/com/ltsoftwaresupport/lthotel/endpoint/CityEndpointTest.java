@@ -46,11 +46,11 @@ public class CityEndpointTest {
     @AfterEach
     void cleanup() throws DefaultException {
         if (savedCity != null)
-            endpoint.delete(savedCity);
+            endpoint.delete(savedCity.getId());
         if (savedState != null)
-            stateEndpoint.delete(savedState);
+            stateEndpoint.delete(savedState.getId());
         if (savedCountry != null)
-            countryEndpoint.delete(savedCountry);
+            countryEndpoint.delete(savedCountry.getId());
     }
 
     private State createState() throws DefaultException {
@@ -97,7 +97,7 @@ public class CityEndpointTest {
     @Order(5)
     void delete() throws DefaultException {
         assertNotNull(savedCity);
-        endpoint.delete(savedCity);
+        endpoint.delete(savedCity.getId());
         assertThrows(DefaultException.class, () -> endpoint.load(savedCity.getId()));
     }
 }

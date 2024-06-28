@@ -48,13 +48,13 @@ public class GuestEndpointTest {
     @AfterEach
     void cleanup() throws DefaultException {
         if (savedGuest != null)
-            endpoint.delete(savedGuest);
+            endpoint.delete(savedGuest.getId());
         if (savedCity != null)
-            cityEndpoint.delete(savedCity);
+            cityEndpoint.delete(savedCity.getId());
         if (savedState != null)
-            stateEndpoint.delete(savedState);
+            stateEndpoint.delete(savedState.getId());
         if (savedCountry != null)
-            countryEndpoint.delete(savedCountry);
+            countryEndpoint.delete(savedCountry.getId());
     }
 
     private State createState() throws DefaultException {
@@ -105,7 +105,7 @@ public class GuestEndpointTest {
     @Order(5)
     void delete() throws DefaultException {
         assertNotNull(savedGuest);
-        endpoint.delete(savedGuest);
+        endpoint.delete(savedGuest.getId());
         assertThrows(DefaultException.class, () -> endpoint.load(savedGuest.getId()));
     }
 }
