@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "city")
+@Table(name = "city", uniqueConstraints = {
+	    @UniqueConstraint(columnNames = {"name", "state_id"})
+	})
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

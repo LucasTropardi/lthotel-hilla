@@ -12,14 +12,18 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "state")
+@Table(name = "state", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"name", "country_id"})
+})
 public class State {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
+
     @NotBlank
     private String name;
 
