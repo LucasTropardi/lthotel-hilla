@@ -9,6 +9,7 @@ import UserForm from './views/user/UserForm';
 import ProtectedRoute from './util/ProtectedRoute';
 import { Role } from './models/Role';
 import CountryGrid from './views/country/CountryGrid';
+import StateGrid from './views/state/StateGrid';
 
 const AboutView = lazy(async () => import('Frontend/views/about/AboutView.js'));
 
@@ -41,6 +42,14 @@ const routing = protectRoutes([
         handle: { title: 'Países', requiresLogin: true },
         children: [
           { path: '', element: <CountryGrid />, handle: { title: 'Cadastro de países', requiresLogin: true } },
+        ]
+      },
+      {
+        path: '/state',
+        element: <ProtectedRoute rolesAllowed={[Role.ADMIN, Role.USER]} />,
+        handle: { title: 'Estados', requiresLogin: true },
+        children: [
+          { path: '', element: <StateGrid />, handle: { title: 'Cadastro de estados', requiresLogin: true } },
         ]
       },
     ],

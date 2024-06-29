@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { AppLayout } from '@hilla/react-components/AppLayout.js';
-import { Avatar } from '@hilla/react-components/Avatar.js';
 import { Button } from '@hilla/react-components/Button.js';
 import { DrawerToggle } from '@hilla/react-components/DrawerToggle.js';
 import { useAuth } from 'Frontend/util/auth.js';
@@ -8,6 +7,7 @@ import { useRouteMetadata } from 'Frontend/util/routing.js';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { Dialog } from '@hilla/react-components/Dialog.js';
 import { Role } from 'Frontend/models/Role';
+import { Icon } from '@hilla/react-components/Icon.js';
 
 const navLinkClasses = ({ isActive }: any) => {
   return `block rounded-m p-s ${isActive ? 'bg-primary-10 text-primary' : 'text-body'}`;
@@ -26,11 +26,9 @@ export default function MainLayout() {
       state.user.profilePicture.reduce((str, n) => str + String.fromCharCode((n + 256) % 256), ''),
     )}`;
 
-  // Verificar se o usuário é admin
   const isAdmin = state.user?.roles.includes(Role.ADMIN);
-
-  // Estado para controlar o diálogo de confirmação
   const [dialogOpened, setDialogOpened] = useState(false);
+  const [isCadastroOpen, setIsCadastroOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -48,16 +46,34 @@ export default function MainLayout() {
                 Hello World
               </NavLink>
             ) : null}
-            {isAdmin ? (
-              <NavLink className={navLinkClasses} to="/user">
-                Usuários
-              </NavLink>
-            ) : null}
-            {state.user ? (
-              <NavLink className={navLinkClasses} to="/country">
-                Países
-              </NavLink>
-            ) : null}
+            <div className="relative">
+              <Button 
+                className="w-full text-left flex justify-between items-center" 
+                onClick={() => setIsCadastroOpen(!isCadastroOpen)}
+              >
+                Cadastro
+                <Icon icon={isCadastroOpen ? "vaadin:angle-up" : "vaadin:angle-down"} />
+              </Button>
+              {isCadastroOpen && (
+                <div className="flex flex-col ml-4">
+                  {isAdmin ? (
+                    <NavLink className={navLinkClasses} to="/user">
+                      Usuários
+                    </NavLink>
+                  ) : null}
+                  {state.user ? (
+                    <NavLink className={navLinkClasses} to="/country">
+                      Países
+                    </NavLink>
+                  ) : null}
+                  {state.user ? (
+                    <NavLink className={navLinkClasses} to="/state">
+                      Estados
+                    </NavLink>
+                  ) : null}
+                </div>
+              )}
+            </div>
           </nav>
         </header>
         <footer className="flex flex-col gap-s">
@@ -85,7 +101,6 @@ export default function MainLayout() {
         <Outlet />
       </Suspense>
 
-      {/* Diálogo de confirmação de logout */}
       <Dialog
         headerTitle="Tem certeza que deseja sair?"
         opened={dialogOpened}
