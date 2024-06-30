@@ -7,7 +7,7 @@ import { ErrorWithMessage } from 'Frontend/types/ErrorTypes';
 export async function getStates(): Promise<State[]> {
   const pageable: Pageable = {
     pageNumber: 0,
-    pageSize: 10,
+    pageSize: 1000,
     sort: {
       orders: []
     }

@@ -6,7 +6,7 @@ import { ErrorWithMessage } from 'Frontend/types/ErrorTypes';
 export async function getUsers(): Promise<User[]> {
   const pageable: Pageable = {
     pageNumber: 0,
-    pageSize: 10,
+    pageSize: 1000,
     sort: {
       orders: []
     }

@@ -4,8 +4,11 @@ import com.ltsoftwaresupport.lthotel.exception.DefaultException;
 import com.ltsoftwaresupport.lthotel.model.City;
 import com.ltsoftwaresupport.lthotel.repository.CityRepository;
 import dev.hilla.Endpoint;
+import dev.hilla.Nonnull;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -39,5 +42,19 @@ public class CityEndpoint {
 
     public void delete(Long id) throws DefaultException {
         repository.deleteById(id);
+    }
+    
+    public void deleteCities(@Nonnull List<@Nonnull Long> ids) throws DefaultException{
+        for (Long id : ids) {
+            repository.deleteById(id);
+        }
+    }
+
+    public Page<City> listCities(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    public List<City> listCityByName(String name) {
+        return repository.findByNameContainingIgnoreCase(name);
     }
 }

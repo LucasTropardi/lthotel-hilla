@@ -58,17 +58,22 @@ export default function MainLayout() {
                 <div className="flex flex-col ml-4">
                   {isAdmin ? (
                     <NavLink className={navLinkClasses} to="/user">
-                      Usuários
+                      <i className='fa-solid fa-user-group'/> Usuários
                     </NavLink>
                   ) : null}
                   {state.user ? (
                     <NavLink className={navLinkClasses} to="/country">
-                      Países
+                      <i className='fa-solid fa-earth-americas'/> Países
                     </NavLink>
                   ) : null}
                   {state.user ? (
                     <NavLink className={navLinkClasses} to="/state">
-                      Estados
+                      <i className='fa-solid fa-flag'/> Estados
+                    </NavLink>
+                  ) : null}
+                  {state.user ? (
+                    <NavLink className={navLinkClasses} to="/city">
+                      <i className='fa-solid fa-map-pin'/> Cidades
                     </NavLink>
                   ) : null}
                 </div>
