@@ -43,16 +43,15 @@ export default function MainLayout() {
           <nav>
             {state.user ? (
               <NavLink className={navLinkClasses} to="/">
-                Hello World
+                <i className='fa-solid fa-chart-line'/> Dashboard
               </NavLink>
             ) : null}
             <div className="relative">
               <Button 
-                className="w-full text-left flex justify-between items-center" 
+                className="w-full" 
                 onClick={() => setIsCadastroOpen(!isCadastroOpen)}
               >
                 Cadastro
-                <Icon icon={isCadastroOpen ? "vaadin:angle-up" : "vaadin:angle-down"} />
               </Button>
               {isCadastroOpen && (
                 <div className="flex flex-col ml-4">
@@ -74,6 +73,11 @@ export default function MainLayout() {
                   {state.user ? (
                     <NavLink className={navLinkClasses} to="/city">
                       <i className='fa-solid fa-map-pin'/> Cidades
+                    </NavLink>
+                  ) : null}
+                  {state.user ? (
+                    <NavLink className={navLinkClasses} to="/company">
+                      <i className='fa-solid fa-building'/> Empresas
                     </NavLink>
                   ) : null}
                 </div>

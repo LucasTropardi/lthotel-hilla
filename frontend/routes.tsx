@@ -1,5 +1,4 @@
 import { protectRoutes } from '@hilla/react-auth';
-import HelloWorldView from 'Frontend/views/helloworld/HelloWorldView.js';
 import LoginView from 'Frontend/views/login/LoginView.js';
 import MainLayout from 'Frontend/views/MainLayout.js';
 import { lazy } from 'react';
@@ -11,8 +10,8 @@ import { Role } from './models/Role';
 import CountryGrid from './views/country/CountryGrid';
 import StateGrid from './views/state/StateGrid';
 import CityGrid from './views/city/CityGrid';
-
-const AboutView = lazy(async () => import('Frontend/views/about/AboutView.js'));
+import Dashboard from './views/dashboard/Dashboard';
+import CompanyGrid from './views/company/CompanyGrid';
 
 const UserFormWrapper = () => {
   const handleFormSubmit = () => {
@@ -27,8 +26,7 @@ const routing = protectRoutes([
     element: <MainLayout />,
     handle: { title: 'Main' },
     children: [
-      { path: '/', element: <HelloWorldView />, handle: { title: 'Hello World', requiresLogin: true } },
-      { path: '/about', element: <AboutView />, handle: { title: 'About', requiresLogin: true } },
+      { path: '/', element: <Dashboard />, handle: { title: 'Dashboard', requiresLogin: true } },
       {
         path: '/user',
         element: <ProtectedRoute rolesAllowed={[Role.ADMIN]} />,
@@ -59,6 +57,14 @@ const routing = protectRoutes([
         handle: { title: 'Cidades', requiresLogin: true },
         children: [
           { path: '', element: <CityGrid />, handle: { title: 'Cadastro de cidades', requiresLogin: true } },
+        ]
+      },
+      {
+        path: '/company',
+        element: <ProtectedRoute rolesAllowed={[Role.ADMIN, Role.USER]} />,
+        handle: { title: 'Empresas', requiresLogin: true },
+        children: [
+          { path: '', element: <CompanyGrid />, handle: { title: 'Cadastro de empresas', requiresLogin: true } },
         ]
       },
     ],

@@ -1,11 +1,15 @@
 package com.ltsoftwaresupport.lthotel.endpoint;
 
 import com.ltsoftwaresupport.lthotel.exception.DefaultException;
+import com.ltsoftwaresupport.lthotel.model.City;
 import com.ltsoftwaresupport.lthotel.model.Company;
 import com.ltsoftwaresupport.lthotel.repository.CompanyRepository;
 import dev.hilla.Endpoint;
+import dev.hilla.Nonnull;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -39,5 +43,19 @@ public class CompanyEndpoint {
 
     public void delete(Long id) throws DefaultException {
        repository.deleteById(id);
+    }
+
+    public void deleteCompanies(@Nonnull List<@Nonnull Long> ids) throws DefaultException{
+        for (Long id : ids) {
+            repository.deleteById(id);
+        }
+    }
+
+    public Page<Company> listCompanies(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    public List<Company> listCompanyByName(String razaoSocial) {
+        return repository.findByRazaoSocialContainingIgnoreCase(razaoSocial);
     }
 }
