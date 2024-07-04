@@ -3,7 +3,7 @@ import { FormLayout } from '@hilla/react-components/FormLayout.js';
 import { useNavigate } from 'react-router-dom';
 import { createCompany, updateCompany } from 'Frontend/util/CompanyService';
 import { City } from 'Frontend/models/City';
-import { Company } from 'Frontend/models/Company';
+import { Company, validateCNPJ } from 'Frontend/models/Company';
 import { getCompanies } from 'Frontend/util/CompanyService';
 import TextField from '@mui/material/TextField';
 import Select from 'react-select';
@@ -12,6 +12,7 @@ import ActionBar from 'Frontend/components/ActionBar';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getCities } from 'Frontend/util/CityService';
+import { formatCNPJ, formatPhoneNumber, formatInscricaoEstadual } from 'Frontend/util/masks';
 
 interface CompanyFormProps {
   onSubmit: () => void;
@@ -29,6 +30,7 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
   const [cities, setCities] = useState<City[]>([]);
   const [email, setEmail] = useState<string>('');
   const [telefone, setTelefone] = useState<string>('');
+  const [cnpjError, setCnpjError] = useState<string | null>(null);
 
   useEffect(() => {
     if (selectedCompany) {
@@ -45,18 +47,25 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
   }, [selectedCompany]);
 
   const loadCities = async () => {
-    const cities = await getCities(); // Corrigido para utilizar cities
+    const cities = await getCities();
     setCities(cities);
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    const cnpjUnformatted = cnpj.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos antes de validar
+
+    if (!validateCNPJ(cnpjUnformatted)) {
+      setCnpjError('CNPJ inválido');
+      return;
+    }
+
     const newCompany: Omit<Company, 'id'> = {
       razaoSocial,
       inscricaoEstadual,
       fantasia,
-      cnpj,
+      cnpj: cnpjUnformatted,
       address,
       city: city as City,
       email,
@@ -65,7 +74,7 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
 
     try {
       if (selectedCompany) {
-        await updateCompany({ ...selectedCompany, razaoSocial, inscricaoEstadual, fantasia, cnpj, address, email, telefone, city: city as City });
+        await updateCompany({ ...selectedCompany, razaoSocial, inscricaoEstadual, fantasia, cnpj: cnpjUnformatted, address, email, telefone, city: city as City });
       } else {
         await createCompany(newCompany);
       }
@@ -90,6 +99,24 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
 
   const handleCityChange = (selectedOption: any) => {
     setCity(selectedOption.value as City);
+  };
+
+  const handleCnpjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedCNPJ = formatCNPJ(e.target.value);
+    setCnpj(formattedCNPJ);
+    if (cnpjError) {
+      setCnpjError(null); // Limpar mensagem de erro ao digitar
+    }
+  };
+
+  const handleInscricaoEstadualChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedInscricaoEstadual = formatInscricaoEstadual(e.target.value);
+    setInscricaoEstadual(formattedInscricaoEstadual);
+  };
+
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedPhoneNumber = formatPhoneNumber(e.target.value);
+    setTelefone(formattedPhoneNumber);
   };
 
   const cityOptions = cities.map(city => ({
@@ -123,10 +150,11 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
           <TextField
             label="Inscrição estadual"
             value={inscricaoEstadual}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInscricaoEstadual(e.target.value)}
+            onChange={handleInscricaoEstadualChange}
             required
             fullWidth
             className="input-field"
+            inputProps={{ maxLength: 14 }} // Limitar a entrada a 14 caracteres
           />
           <TextField
             label="Fantasia"
@@ -139,15 +167,18 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
           <TextField
             label="CNPJ"
             value={cnpj}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCnpj(e.target.value)}
+            onChange={handleCnpjChange}
             required
             fullWidth
             className="input-field"
+            error={!!cnpjError}
+            helperText={cnpjError}
+            inputProps={{ maxLength: 18 }} // Limitar a entrada a 18 caracteres
           />
           <TextField
             label="E-mail"
             value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} // Corrigido para setEmail
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             required
             fullWidth
             className="input-field"
@@ -155,7 +186,7 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
           <TextField
             label="Telefone"
             value={telefone}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTelefone(e.target.value)} // Corrigido para setTelefone
+            onChange={handlePhoneNumberChange}
             required
             fullWidth
             className="input-field"
@@ -163,7 +194,7 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
           <TextField
             label="Endereço"
             value={address}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)} // Corrigido para setAddress
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
             required
             fullWidth
             className="input-field"

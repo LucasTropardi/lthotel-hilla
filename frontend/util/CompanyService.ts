@@ -47,6 +47,7 @@ export async function createCompany(company: Omit<Company, 'id'>): Promise<Compa
     if (e.message.includes('Duplicate entry')) {
       throw new Error('Duplicate entry for razao social.');
     }
+    console.log(e.message);
     throw new Error('Error creating company.');
   }
 }
