@@ -24,17 +24,21 @@ export default function StateForm({ onSubmit, selectedState }: StateFormProps) {
   const [countries, setCountries] = useState<Country[]>([]); 
 
   useEffect(() => {
-    if (selectedState) {
-      setName(selectedState.name || '');
-      setCountry(selectedState.country || null);
-    }
-    loadCountries();
-  }, [selectedState]);
+    const loadFormData = async () => {
+      const loadedCountries = await getCountries();
+      setCountries(loadedCountries);
+      
+      if (selectedState) {
+        setName(selectedState.name || '');
+        if (selectedState.country) {
+          const selectedCountry = loadedCountries.find(c => c.id === selectedState.country?.id);
+          setCountry(selectedCountry || null);
+        }
+      }
+    };
 
-  const loadCountries = async () => {
-    const countries = await getCountries();
-    setCountries(countries);
-  };
+    loadFormData();
+  }, [selectedState]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -70,7 +74,7 @@ export default function StateForm({ onSubmit, selectedState }: StateFormProps) {
   };
 
   const handleCountryChange = (selectedOption: any) => {
-    setCountry(selectedOption.value as Country);
+    setCountry(selectedOption ? selectedOption.value : null);
   };
 
   const countryOptions = countries.map(country => ({
@@ -107,7 +111,7 @@ export default function StateForm({ onSubmit, selectedState }: StateFormProps) {
             options={countryOptions}
             className="single-select"
             classNamePrefix="select"
-            value={countryOptions.find(option => option.value === country)}
+            value={countryOptions.find(option => option.value.id === country?.id)}
             onChange={handleCountryChange}
             styles={{ control: (provided) => ({ ...provided, width: '100%', marginTop: '16px', marginBottom: '16px', padding: '8px' }) }}
           />

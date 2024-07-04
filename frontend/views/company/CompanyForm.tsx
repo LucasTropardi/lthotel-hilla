@@ -33,28 +33,33 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
   const [cnpjError, setCnpjError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (selectedCompany) {
-      setRazaoSocial(selectedCompany.razaoSocial || '');
-      setInscricaoEstadual(selectedCompany.inscricaoEstadual || '');
-      setFantasia(selectedCompany.fantasia || '');
-      setCnpj(selectedCompany.cnpj || '');
-      setAddress(selectedCompany.address || '');
-      setCity(selectedCompany.city || null);
-      setEmail(selectedCompany.email || '');
-      setTelefone(selectedCompany.telefone || '');
-    }
-    loadCities();
-  }, [selectedCompany]);
+    const loadFormData = async () => {
+      const loadedCities = await getCities();
+      setCities(loadedCities);
+      
+      if (selectedCompany) {
+        setRazaoSocial(selectedCompany.razaoSocial || '');
+        setInscricaoEstadual(selectedCompany.inscricaoEstadual || '');
+        setFantasia(selectedCompany.fantasia || '');
+        setCnpj(selectedCompany.cnpj || '');
+        setAddress(selectedCompany.address || '');
+        setEmail(selectedCompany.email || '');
+        setTelefone(selectedCompany.telefone || '');
 
-  const loadCities = async () => {
-    const cities = await getCities();
-    setCities(cities);
-  };
+        if (selectedCompany.city) {
+          const selectedCity = loadedCities.find(city => city.id === selectedCompany.city?.id);
+          setCity(selectedCity || null);
+        }
+      }
+    };
+
+    loadFormData();
+  }, [selectedCompany]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const cnpjUnformatted = cnpj.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos antes de validar
+    const cnpjUnformatted = cnpj.replace(/[^\d]+/g, '');
 
     if (!validateCNPJ(cnpjUnformatted)) {
       setCnpjError('CNPJ inválido');
@@ -98,14 +103,14 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
   };
 
   const handleCityChange = (selectedOption: any) => {
-    setCity(selectedOption.value as City);
+    setCity(selectedOption ? selectedOption.value : null);
   };
 
   const handleCnpjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formattedCNPJ = formatCNPJ(e.target.value);
     setCnpj(formattedCNPJ);
     if (cnpjError) {
-      setCnpjError(null); // Limpar mensagem de erro ao digitar
+      setCnpjError(null);
     }
   };
 
@@ -154,7 +159,7 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
             required
             fullWidth
             className="input-field"
-            inputProps={{ maxLength: 14 }} // Limitar a entrada a 14 caracteres
+            inputProps={{ maxLength: 14 }}
           />
           <TextField
             label="Fantasia"
@@ -173,7 +178,7 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
             className="input-field"
             error={!!cnpjError}
             helperText={cnpjError}
-            inputProps={{ maxLength: 18 }} // Limitar a entrada a 18 caracteres
+            inputProps={{ maxLength: 18 }}
           />
           <TextField
             label="E-mail"
@@ -190,6 +195,7 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
             required
             fullWidth
             className="input-field"
+            inputProps={{ maxLength: 14 }}
           />
           <TextField
             label="Endereço"
@@ -205,7 +211,7 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
             options={cityOptions}
             className="single-select"
             classNamePrefix="select"
-            value={cityOptions.find(option => option.value === city)}
+            value={cityOptions.find(option => option.value.id === city?.id)}
             onChange={handleCityChange}
             styles={{ control: (provided) => ({ ...provided, width: '100%', marginTop: '16px', marginBottom: '16px', padding: '8px' }) }}
           />
