@@ -24,17 +24,21 @@ export default function CityForm({ onSubmit, selectedCity }: CityFormProps) {
   const [states, setStates] = useState<State[]>([]); 
 
   useEffect(() => {
-    if (selectedCity) {
-      setName(selectedCity.name || '');
-      setState(selectedCity.state || null);
-    }
-    loadStates();
-  }, [selectedCity]);
+    const loadFormData = async () => {
+      const loadedStates = await getStates();
+      setStates(loadedStates);
+      
+      if (selectedCity) {
+        setName(selectedCity.name || '');
+        if (selectedCity.state) {
+          const selectedState = loadedStates.find(s => s.id === selectedCity.state?.id);
+          setState(selectedState || null);
+        }
+      }
+    };
 
-  const loadStates = async () => {
-    const states = await getStates();
-    setStates(states);
-  };
+    loadFormData();
+  }, [selectedCity]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -70,7 +74,7 @@ export default function CityForm({ onSubmit, selectedCity }: CityFormProps) {
   };
 
   const handleStateChange = (selectedOption: any) => {
-    setState(selectedOption.value as State);
+    setState(selectedOption ? selectedOption.value : null);
   };
 
   const stateOptions = states.map(state => ({
@@ -107,7 +111,7 @@ export default function CityForm({ onSubmit, selectedCity }: CityFormProps) {
             options={stateOptions}
             className="single-select"
             classNamePrefix="select"
-            value={stateOptions.find(option => option.value === state)}
+            value={stateOptions.find(option => option.value.id === state?.id)}
             onChange={handleStateChange}
             styles={{ control: (provided) => ({ ...provided, width: '100%', marginTop: '16px', marginBottom: '16px', padding: '8px' }) }}
           />

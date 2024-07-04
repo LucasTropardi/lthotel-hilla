@@ -15,6 +15,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCompany } from 'Frontend/hooks/useCompany';
 import CompanyForm from './CompanyForm';
+import { formatCNPJ } from 'Frontend/util/masks';
 
 export default function CompanyGrid() {
   const { companies, loading, error, refetch } = useCompany();
@@ -178,7 +179,12 @@ export default function CompanyGrid() {
               <GridColumn path="id" header="Id" />
               <GridColumn path="razaoSocial" header="Razão Social" />
               <GridColumn path="fantasia" header="Fantasia" />
-              <GridColumn path="cnpj" header="CNPJ" />
+              <GridColumn
+                header="CNPJ"
+                renderer={({ item }: { item: Company }) => (
+                  <span>{formatCNPJ(item.cnpj || '')}</span>
+                )}
+              />
               <GridColumn path="city.name" header="Cidade" />
               <GridColumn path="telefone" header="Telefone" />
             </Grid>

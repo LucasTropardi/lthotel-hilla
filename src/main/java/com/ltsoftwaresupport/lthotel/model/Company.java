@@ -1,5 +1,6 @@
 package com.ltsoftwaresupport.lthotel.model;
 
+import com.ltsoftwaresupport.lthotel.validation.ValidCNPJ;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class Company {
     private String inscricaoEstadual;
     @NotBlank
     private String fantasia;
+    @ValidCNPJ
     @NotBlank
     private String cnpj;
     @NotBlank

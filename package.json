@@ -30,9 +30,12 @@
     "lit": "3.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-input-mask": "^2.0.4",
     "react-router-dom": "^6.4.2",
     "react-select": "^5.8.0",
-    "react-toastify": "^10.0.5"
+    "react-text-mask": "^5.5.0",
+    "react-toastify": "^10.0.5",
+    "text-mask-addons": "^3.8.0"
   },
   "devDependencies": {
     "@lit-labs/react": "^1.1.0",
@@ -85,7 +88,10 @@
     "react-toastify": "$react-toastify",
     "@emotion/react": "$@emotion/react",
     "@emotion/styled": "$@emotion/styled",
-    "@mui/material": "$@mui/material"
+    "@mui/material": "$@mui/material",
+    "react-input-mask": "$react-input-mask",
+    "react-text-mask": "$react-text-mask",
+    "text-mask-addons": "$text-mask-addons"
   },
   "vaadin": {
     "dependencies": {
@@ -129,6 +135,6 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "facc662b46a6005065d9b0d6cd7305bbdac9f23ad09712b1352cc0791ac27981"
+    "hash": "d4dcc6cfc69d0b573c09b111d63fe00a9328653e2194668a5c78b57e9a60ebce"
   }
 }

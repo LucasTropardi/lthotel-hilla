@@ -3,7 +3,7 @@ import { FormLayout } from '@hilla/react-components/FormLayout.js';
 import { useNavigate } from 'react-router-dom';
 import { createCompany, updateCompany } from 'Frontend/util/CompanyService';
 import { City } from 'Frontend/models/City';
-import { Company } from 'Frontend/models/Company';
+import { Company, validateCNPJ } from 'Frontend/models/Company';
 import { getCompanies } from 'Frontend/util/CompanyService';
 import TextField from '@mui/material/TextField';
 import Select from 'react-select';
@@ -12,6 +12,7 @@ import ActionBar from 'Frontend/components/ActionBar';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getCities } from 'Frontend/util/CityService';
+import { formatCNPJ, formatPhoneNumber, formatInscricaoEstadual } from 'Frontend/util/masks';
 
 interface CompanyFormProps {
   onSubmit: () => void;
@@ -29,34 +30,47 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
   const [cities, setCities] = useState<City[]>([]);
   const [email, setEmail] = useState<string>('');
   const [telefone, setTelefone] = useState<string>('');
+  const [cnpjError, setCnpjError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (selectedCompany) {
-      setRazaoSocial(selectedCompany.razaoSocial || '');
-      setInscricaoEstadual(selectedCompany.inscricaoEstadual || '');
-      setFantasia(selectedCompany.fantasia || '');
-      setCnpj(selectedCompany.cnpj || '');
-      setAddress(selectedCompany.address || '');
-      setCity(selectedCompany.city || null);
-      setEmail(selectedCompany.email || '');
-      setTelefone(selectedCompany.telefone || '');
-    }
-    loadCities();
-  }, [selectedCompany]);
+    const loadFormData = async () => {
+      const loadedCities = await getCities();
+      setCities(loadedCities);
+      
+      if (selectedCompany) {
+        setRazaoSocial(selectedCompany.razaoSocial || '');
+        setInscricaoEstadual(selectedCompany.inscricaoEstadual || '');
+        setFantasia(selectedCompany.fantasia || '');
+        setCnpj(formatCNPJ(selectedCompany.cnpj || '')); // Formatar CNPJ ao carregar
+        setAddress(selectedCompany.address || '');
+        setEmail(selectedCompany.email || '');
+        setTelefone(selectedCompany.telefone || '');
 
-  const loadCities = async () => {
-    const cities = await getCities(); // Corrigido para utilizar cities
-    setCities(cities);
-  };
+        if (selectedCompany.city) {
+          const selectedCity = loadedCities.find(city => city.id === selectedCompany.city?.id);
+          setCity(selectedCity || null);
+        }
+      }
+    };
+
+    loadFormData();
+  }, [selectedCompany]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    const cnpjUnformatted = cnpj.replace(/[^\d]+/g, '');
+
+    if (!validateCNPJ(cnpjUnformatted)) {
+      setCnpjError('CNPJ inválido');
+      return;
+    }
 
     const newCompany: Omit<Company, 'id'> = {
       razaoSocial,
       inscricaoEstadual,
       fantasia,
-      cnpj,
+      cnpj: cnpjUnformatted,
       address,
       city: city as City,
       email,
@@ -65,7 +79,7 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
 
     try {
       if (selectedCompany) {
-        await updateCompany({ ...selectedCompany, razaoSocial, inscricaoEstadual, fantasia, cnpj, address, email, telefone, city: city as City });
+        await updateCompany({ ...selectedCompany, razaoSocial, inscricaoEstadual, fantasia, cnpj: cnpjUnformatted, address, email, telefone, city: city as City });
       } else {
         await createCompany(newCompany);
       }
@@ -89,7 +103,25 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
   };
 
   const handleCityChange = (selectedOption: any) => {
-    setCity(selectedOption.value as City);
+    setCity(selectedOption ? selectedOption.value : null);
+  };
+
+  const handleCnpjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedCNPJ = formatCNPJ(e.target.value);
+    setCnpj(formattedCNPJ);
+    if (cnpjError) {
+      setCnpjError(null);
+    }
+  };
+
+  const handleInscricaoEstadualChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedInscricaoEstadual = formatInscricaoEstadual(e.target.value);
+    setInscricaoEstadual(formattedInscricaoEstadual);
+  };
+
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedPhoneNumber = formatPhoneNumber(e.target.value);
+    setTelefone(formattedPhoneNumber);
   };
 
   const cityOptions = cities.map(city => ({
@@ -123,10 +155,11 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
           <TextField
             label="Inscrição estadual"
             value={inscricaoEstadual}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInscricaoEstadual(e.target.value)}
+            onChange={handleInscricaoEstadualChange}
             required
             fullWidth
             className="input-field"
+            inputProps={{ maxLength: 14 }}
           />
           <TextField
             label="Fantasia"
@@ -139,15 +172,18 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
           <TextField
             label="CNPJ"
             value={cnpj}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCnpj(e.target.value)}
+            onChange={handleCnpjChange}
             required
             fullWidth
             className="input-field"
+            error={!!cnpjError}
+            helperText={cnpjError}
+            inputProps={{ maxLength: 18 }}
           />
           <TextField
             label="E-mail"
             value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} // Corrigido para setEmail
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             required
             fullWidth
             className="input-field"
@@ -155,15 +191,16 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
           <TextField
             label="Telefone"
             value={telefone}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTelefone(e.target.value)} // Corrigido para setTelefone
+            onChange={handlePhoneNumberChange}
             required
             fullWidth
             className="input-field"
+            inputProps={{ maxLength: 14 }}
           />
           <TextField
             label="Endereço"
             value={address}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)} // Corrigido para setAddress
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
             required
             fullWidth
             className="input-field"
@@ -174,7 +211,7 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
             options={cityOptions}
             className="single-select"
             classNamePrefix="select"
-            value={cityOptions.find(option => option.value === city)}
+            value={cityOptions.find(option => option.value.id === city?.id)}
             onChange={handleCityChange}
             styles={{ control: (provided) => ({ ...provided, width: '100%', marginTop: '16px', marginBottom: '16px', padding: '8px' }) }}
           />

@@ -7,6 +7,7 @@ import com.ltsoftwaresupport.lthotel.repository.CompanyRepository;
 import dev.hilla.Endpoint;
 import dev.hilla.Nonnull;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,11 +34,11 @@ public class CompanyEndpoint {
         return repository.findById(id).orElseThrow(() -> new DefaultException("Não existe"));
     }
 
-    public Company save(Company company) throws DefaultException {
+    public Company save(@Valid Company company) throws DefaultException {
         return repository.save(company);
     }
 
-    public Company update(Company company) throws DefaultException {
+    public Company update(@Valid Company company) throws DefaultException {
         return repository.save(company);
     }
 
