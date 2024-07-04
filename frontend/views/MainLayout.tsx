@@ -39,13 +39,10 @@ export default function MainLayout() {
     <AppLayout primarySection="drawer">
       <div slot="drawer" className="flex flex-col justify-between h-full p-m">
         <header className="flex flex-col gap-m">
-          <img style={{ width: '200px' }} src="images/PMS-LT.png" />
+          <Link to="/">
+            <img style={{ width: '200px' }} src="images/PMS-LT.png" />
+          </Link>
           <nav>
-            {state.user ? (
-              <NavLink className={navLinkClasses} to="/">
-                <i className='fa-solid fa-chart-line'/> Dashboard
-              </NavLink>
-            ) : null}
             <div className="relative">
               <Button 
                 className="w-full" 

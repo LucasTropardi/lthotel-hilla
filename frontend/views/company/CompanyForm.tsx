@@ -41,7 +41,7 @@ export default function CompanyForm({ onSubmit, selectedCompany }: CompanyFormPr
         setRazaoSocial(selectedCompany.razaoSocial || '');
         setInscricaoEstadual(selectedCompany.inscricaoEstadual || '');
         setFantasia(selectedCompany.fantasia || '');
-        setCnpj(selectedCompany.cnpj || '');
+        setCnpj(formatCNPJ(selectedCompany.cnpj || '')); // Formatar CNPJ ao carregar
         setAddress(selectedCompany.address || '');
         setEmail(selectedCompany.email || '');
         setTelefone(selectedCompany.telefone || '');
