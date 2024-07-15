@@ -7,7 +7,6 @@ import { useRouteMetadata } from 'Frontend/util/routing.js';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { Dialog } from '@hilla/react-components/Dialog.js';
 import { Role } from 'Frontend/models/Role';
-import { Icon } from '@hilla/react-components/Icon.js';
 
 const navLinkClasses = ({ isActive }: any) => {
   return `block rounded-m p-s ${isActive ? 'bg-primary-10 text-primary' : 'text-body'}`;
