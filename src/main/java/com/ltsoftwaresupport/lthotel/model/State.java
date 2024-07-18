@@ -3,7 +3,9 @@ package com.ltsoftwaresupport.lthotel.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author Lucas Tropardi
@@ -12,6 +14,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "state", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"name", "country_id"})
 })
@@ -26,28 +30,4 @@ public class State {
 
     @NotBlank
     private String name;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-
-    public @NotBlank String getName() {
-        return name;
-    }
-
-    public void setName(@NotBlank String name) {
-        this.name = name;
-    }
 }

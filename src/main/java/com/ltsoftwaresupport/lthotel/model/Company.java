@@ -3,8 +3,7 @@ package com.ltsoftwaresupport.lthotel.model;
 import com.ltsoftwaresupport.lthotel.validation.ValidCNPJ;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * @author Lucas Tropardi
@@ -13,6 +12,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "company", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"cnpj"})
 })
@@ -38,76 +39,4 @@ public class Company {
     private String email;
     @NotBlank
     private String telefone;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public @NotBlank String getRazaoSocial() {
-        return razaoSocial;
-    }
-
-    public void setRazaoSocial(@NotBlank String razaoSocial) {
-        this.razaoSocial = razaoSocial;
-    }
-
-    public @NotBlank String getInscricaoEstadual() {
-        return inscricaoEstadual;
-    }
-
-    public void setInscricaoEstadual(@NotBlank String inscricaoEstadual) {
-        this.inscricaoEstadual = inscricaoEstadual;
-    }
-
-    public @NotBlank String getFantasia() {
-        return fantasia;
-    }
-
-    public void setFantasia(@NotBlank String fantasia) {
-        this.fantasia = fantasia;
-    }
-
-    public @NotBlank String getCnpj() {
-        return cnpj;
-    }
-
-    public void setCnpj(@NotBlank String cnpj) {
-        this.cnpj = cnpj;
-    }
-
-    public @NotBlank String getAddress() {
-        return address;
-    }
-
-    public void setAddress(@NotBlank String address) {
-        this.address = address;
-    }
-
-    public City getCity() {
-        return city;
-    }
-
-    public void setCity(City city) {
-        this.city = city;
-    }
-
-    public @NotBlank String getEmail() {
-        return email;
-    }
-
-    public void setEmail(@NotBlank String email) {
-        this.email = email;
-    }
-
-    public @NotBlank String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(@NotBlank String telefone) {
-        this.telefone = telefone;
-    }
 }

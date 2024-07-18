@@ -15,9 +15,9 @@ public class CompanyBuilder {
         companyBuilder.company = new Company();
         companyBuilder.company.setId(0L);
         companyBuilder.company.setRazaoSocial("Razao Social");
-        companyBuilder.company.setInscricaoEstadual("121212121212-12");
+        companyBuilder.company.setInscricaoEstadual("037.889.368.209");
         companyBuilder.company.setFantasia("Fantasia");
-        companyBuilder.company.setCnpj("12.121.121/1111-11");
+        companyBuilder.company.setCnpj("79.617.654/0001-19");
         companyBuilder.company.setAddress("Full address");
         companyBuilder.company.setCity(new City());
         companyBuilder.company.setEmail("email@gmail.com");
