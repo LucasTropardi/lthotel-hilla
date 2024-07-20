@@ -2,20 +2,12 @@ package com.ltsoftwaresupport.lthotel.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * @author Lucas Tropardi
  * 16 de Jun. de 2024
  */
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 @Table(name = "city", uniqueConstraints = {
 	    @UniqueConstraint(columnNames = {"name", "state_id"})
 	})
@@ -28,4 +20,36 @@ public class City {
     private State state;
     @NotBlank
     private String name;
+    
+	public City() {
+		super();
+	}
+	
+	public City(Long id, State state, @NotBlank String name) {
+		super();
+		this.id = id;
+		this.state = state;
+		this.name = name;
+	}
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public State getState() {
+		return state;
+	}
+	public void setState(State state) {
+		this.state = state;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+    
+    
 }
