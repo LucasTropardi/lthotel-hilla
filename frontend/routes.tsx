@@ -12,6 +12,7 @@ import StateGrid from './views/state/StateGrid';
 import CityGrid from './views/city/CityGrid';
 import Dashboard from './views/dashboard/Dashboard';
 import CompanyGrid from './views/company/CompanyGrid';
+import GuestGrid from './views/guest/GuestGrid';
 
 const UserFormWrapper = () => {
   const handleFormSubmit = () => {
@@ -65,6 +66,14 @@ const routing = protectRoutes([
         handle: { title: 'Empresas', requiresLogin: true },
         children: [
           { path: '', element: <CompanyGrid />, handle: { title: 'Cadastro de empresas', requiresLogin: true } },
+        ]
+      },
+      {
+        path: '/guest',
+        element: <ProtectedRoute rolesAllowed={[Role.ADMIN, Role.USER]} />,
+        handle: { title: 'Hóspedes', requiresLogin: true },
+        children: [
+          { path: '', element: <GuestGrid />, handle: { title: 'Cadastro de hóspedes', requiresLogin: true } },
         ]
       },
     ],

@@ -44,8 +44,8 @@ public class Guest {
     private String rg;
     @NotNull
     private LocalDate birth;
-    @NotBlank
-    private String maritalStatus;
+    @NotNull
+    private MaritalStatus maritalStatus;
     private Boolean active;
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = true)
@@ -58,7 +58,7 @@ public class Guest {
 	public Guest(Long id, @NotBlank String name, @NotBlank String lastname, Country nationality, @NotBlank String email,
 			@NotBlank String cellPhone, String telephone, @NotBlank String address, String cep, City city,
 			@NotBlank String profession, @NotBlank String cpf, String rg, @NotNull LocalDate birth,
-			@NotBlank String maritalStatus, Boolean active, Company company) {
+			@NotNull MaritalStatus maritalStatus, Boolean active, Company company) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -163,10 +163,10 @@ public class Guest {
 	public void setBirth(LocalDate birth) {
 		this.birth = birth;
 	}
-	public String getMaritalStatus() {
+	public MaritalStatus getMaritalStatus() {
 		return maritalStatus;
 	}
-	public void setMaritalStatus(String maritalStatus) {
+	public void setMaritalStatus(MaritalStatus maritalStatus) {
 		this.maritalStatus = maritalStatus;
 	}
 	public Boolean getActive() {

@@ -76,6 +76,11 @@ export default function MainLayout() {
                       <i className='fa-solid fa-building'/> Empresas
                     </NavLink>
                   ) : null}
+                  {state.user ? (
+                    <NavLink className={navLinkClasses} to="/guest">
+                      <i className='fa-solid fa-person-walking-luggage'/> Hóspedes
+                    </NavLink>
+                  ) : null}
                 </div>
               )}
             </div>

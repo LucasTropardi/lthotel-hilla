@@ -1,6 +1,7 @@
 import { City } from "./City";
 import { Company } from "./Company";
 import { Country } from "./Country";
+import { MaritalStatus } from "./MaritalStatus";
 
 export interface Guest {
   id?: number;
@@ -17,7 +18,7 @@ export interface Guest {
   cpf?: string;
   rg?: string;
   birth?: string;
-  maritalStatus?: string;
+  maritalStatus?: MaritalStatus;
   active?: boolean;
   company?: Company;
 }

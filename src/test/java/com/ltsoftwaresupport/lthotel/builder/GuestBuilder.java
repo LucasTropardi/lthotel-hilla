@@ -4,6 +4,7 @@ import com.ltsoftwaresupport.lthotel.model.City;
 import com.ltsoftwaresupport.lthotel.model.Company;
 import com.ltsoftwaresupport.lthotel.model.Country;
 import com.ltsoftwaresupport.lthotel.model.Guest;
+import com.ltsoftwaresupport.lthotel.model.MaritalStatus;
 
 import java.time.LocalDate;
 
@@ -30,7 +31,7 @@ public class GuestBuilder {
         guestBuilder.guest.setCpf("123.456.789-10");
         guestBuilder.guest.setRg("12.345.678-9");
         guestBuilder.guest.setBirth(LocalDate.of(1980, 01 , 01));
-        guestBuilder.guest.setMaritalStatus("single");
+        guestBuilder.guest.setMaritalStatus(MaritalStatus.CIVILUNION);
         guestBuilder.guest.setActive(true);
         guestBuilder.guest.setCompany(null);
         return guestBuilder;
